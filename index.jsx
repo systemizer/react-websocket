@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 class Websocket extends React.Component {
   constructor(props) {
-    super(props);
+      super(props);
+      console.log("constructor")
     this.state = {
       ws: window.WebSocket
         ? new window.WebSocket(this.props.url, this.props.protocol)
@@ -52,7 +53,8 @@ class Websocket extends React.Component {
         this.props.onClose(evt.code, evt.reason);
       if (this.shouldReconnect) {
         let time = this.generateInterval(this.state.attempts);
-        this.timeoutID = setTimeout(() => {
+          this.timeoutID = setTimeout(() => {
+              console.log("creating new websocket")
           this.setState({ attempts: this.state.attempts + 1 });
           this.setState({
             ws: window.WebSocket
