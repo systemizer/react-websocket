@@ -87,7 +87,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _get(Object.getPrototypeOf(Websocket.prototype), 'constructor', this).call(this, props);
 	    console.log("constructor");
 	    this.state = {
-	      ws: window.WebSocket ? new window.WebSocket(this.props.url, this.props.protocol) : new window.MozWebSocket(this.props.url, this.props.protocol),
 	      attempts: 1
 	    };
 	    this.sendMessage = this.sendMessage.bind(this);
@@ -114,10 +113,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setupWebsocket() {
 	      var _this = this;
 	
-	      var websocket = this.state.ws;
+	      var websocket = undefined;
+	      if (this.state.ws) {
+	        websocket = this.state.ws;
+	      } else {
+	        websocket = window.WebSocket ? new window.WebSocket(this.props.url, this.props.protocol) : new window.MozWebSocket(this.props.url, this.props.protocol);
+	      }
 	
 	      websocket.onopen = function () {
 	        _this.logging('Websocket connected');
+	        _this.setState({ ws: websocket });
 	        if (typeof _this.props.onOpen === 'function') _this.props.onOpen();
 	      };
 	

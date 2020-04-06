@@ -6,9 +6,6 @@ class Websocket extends React.Component {
       super(props);
       console.log("constructor")
     this.state = {
-      ws: window.WebSocket
-        ? new window.WebSocket(this.props.url, this.props.protocol)
-        : new window.MozWebSocket(this.props.url, this.props.protocol),
       attempts: 1
     };
     this.sendMessage = this.sendMessage.bind(this);
@@ -28,11 +25,19 @@ class Websocket extends React.Component {
     return Math.min(30, Math.pow(2, k) - 1) * 1000;
   }
 
-  setupWebsocket() {
-    let websocket = this.state.ws;
+    setupWebsocket() {
+        let websocket
+        if (this.state.ws) {
+            websocket = this.state.ws
+        } else {
+            websocket = window.WebSocket
+                ? new window.WebSocket(this.props.url, this.props.protocol)
+                : new window.MozWebSocket(this.props.url, this.props.protocol)
+        }
 
     websocket.onopen = () => {
-      this.logging('Websocket connected');
+        this.logging('Websocket connected');
+        this.setState({ ws: websocket });
       if (typeof this.props.onOpen === 'function') this.props.onOpen();
     };
 
